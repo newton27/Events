@@ -20,6 +20,14 @@ if (empty($_SESSION['gmo_fb_events_csrf']))
 
 $sStudioUrl = BX_DOL_URL_STUDIO;
 $sSettingsUrl = BX_DOL_URL_STUDIO . 'module.php?name=gmo_fb_events';
+$sStudioIcon = 'gmo_fb_events@modules/newton/gmo_fb_events/|std-icon.svg';
+
+// Repair metadata on sites updated by replacing files: UNA stores these icon
+// references in the database and does not reread install.sql after installation.
+$oDb = BxDolDb::getInstance();
+$oDb->query("UPDATE `sys_std_pages` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
+$oDb->query("UPDATE `sys_std_widgets` SET `icon` = ? WHERE `module` = ?", array($sStudioIcon, 'gmo_fb_events'));
+$oDb->query("UPDATE `sys_options_types` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
 $bTokenConfigured = trim((string)getParam('gmo_fb_events_page_token')) !== '';
 $bAuthorConfigured = (int)getParam('gmo_fb_events_author_profile_id') > 0;
 $bCategoryConfigured = (int)getParam('gmo_fb_events_category_id') > 0;
