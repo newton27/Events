@@ -114,7 +114,8 @@ class GmoFbEventsModule extends BxDolModule
         );
         $aValues = array(
             'event_name' => $sName, 'event_desc' => $sDescription, 'event_cat' => $iCategory,
-            'date_start' => $aEvent['date_start'], 'date_end' => $aEvent['date_end'],
+            'date_start' => $oStart->format('Y-m-d H:i:s P'),
+            'date_end' => $oEnd->format('Y-m-d H:i:s P'),
             'timezone' => $aEvent['timezone'], 'allow_view_to' => 3, 'allow_post_to' => 3,
             'join_confirmation' => 0,
         );
