@@ -70,6 +70,66 @@ class GmoFbEventsModule extends BxDolModule
         return array('status' => 'imported', 'message' => 'Imported successfully.', 'una_event_id' => $iUnaId, 'event' => $aEvent);
     }
 
+    public function importSharedLink($sUrl, array $aInput)
+    {
+        $sFacebookId = $this->extractEventId($sUrl);
+        $sName = trim(isset($aInput['name']) ? (string)$aInput['name'] : '');
+        $sDescription = trim(isset($aInput['description']) ? (string)$aInput['description'] : '');
+        $sLocation = trim(isset($aInput['location']) ? (string)$aInput['location'] : '');
+        $sStart = trim(isset($aInput['start']) ? (string)$aInput['start'] : '');
+        $sEnd = trim(isset($aInput['end']) ? (string)$aInput['end'] : '');
+        $sTimezone = trim(isset($aInput['timezone']) ? (string)$aInput['timezone'] : '');
+        if ($sName === '' || $sStart === '')
+            throw new InvalidArgumentException('Event title and start date/time are required.');
+        if (mb_strlen($sName) > 255)
+            throw new InvalidArgumentException('Event title is too long.');
+        try { $oTimezone = new DateTimeZone($sTimezone ?: 'America/New_York'); }
+        catch (Exception $e) { throw new InvalidArgumentException('Invalid timezone.'); }
+        $oStart = DateTime::createFromFormat('Y-m-d\\TH:i', $sStart, $oTimezone);
+        if (!$oStart)
+            throw new InvalidArgumentException('Invalid start date/time.');
+        $oEnd = $sEnd !== '' ? DateTime::createFromFormat('Y-m-d\\TH:i', $sEnd, $oTimezone) : (clone $oStart)->modify('+2 hours');
+        if (!$oEnd || $oEnd <= $oStart)
+            throw new InvalidArgumentException('End date/time must be after the start.');
+
+        $aExisting = $this->_oDb->findByFacebookId($sFacebookId);
+        if ($aExisting && $aExisting['status'] === 'imported' && (int)$aExisting['una_event_id'] > 0)
+            return array('status' => 'skipped', 'message' => 'This Facebook event link was already imported.', 'una_event_id' => (int)$aExisting['una_event_id']);
+
+        $iAuthor = (int)getParam('gmo_fb_events_author_profile_id');
+        $iCategory = (int)getParam('gmo_fb_events_category_id');
+        if ($iAuthor < 1 || $iCategory < 1)
+            throw new RuntimeException('Set the UNA author profile ID and event category ID in Studio first.');
+        $oEvents = BxDolModule::getInstance('bx_events');
+        if (!$oEvents)
+            throw new RuntimeException('UNA Events is not installed or enabled.');
+
+        if ($sLocation !== '')
+            $sDescription .= ($sDescription !== '' ? "\\n\\n" : '') . 'Location: ' . $sLocation;
+        $sDescription .= ($sDescription !== '' ? "\\n\\n" : '') . 'Facebook event: ' . $sUrl;
+        $aEvent = array(
+            'facebook_id' => $sFacebookId, 'source_url' => $sUrl, 'name' => $sName,
+            'description' => $sDescription, 'date_start' => $oStart->getTimestamp(),
+            'date_end' => $oEnd->getTimestamp(), 'timezone' => $oTimezone->getName(), 'venue' => $sLocation,
+        );
+        $aValues = array(
+            'event_name' => $sName, 'event_desc' => $sDescription, 'event_cat' => $iCategory,
+            'date_start' => $aEvent['date_start'], 'date_end' => $aEvent['date_end'],
+            'timezone' => $aEvent['timezone'], 'allow_view_to' => 3, 'allow_post_to' => 3,
+            'join_confirmation' => 0,
+        );
+        $aResult = $oEvents->getFormsHelper()->addData($iAuthor, $aValues);
+        $sHash = hash('sha256', json_encode($aEvent));
+        if (!isset($aResult['code']) || (int)$aResult['code'] !== 0) {
+            $sMessage = isset($aResult['errors']) ? json_encode($aResult['errors']) : (isset($aResult['message']) ? $aResult['message'] : 'UNA event creation failed.');
+            $this->_oDb->saveResult($sFacebookId, $sUrl, 0, $sHash, 'failed', $sMessage);
+            throw new RuntimeException($sMessage);
+        }
+        $iUnaId = (int)$aResult['content']['id'];
+        $this->_oDb->saveResult($sFacebookId, $sUrl, $iUnaId, $sHash, 'imported', 'Imported successfully.');
+        return array('status' => 'imported', 'message' => 'UNA event created from the shared Facebook link.', 'una_event_id' => $iUnaId, 'event' => $aEvent);
+    }
+
     private function normalize($sUrl, array $aEvent)
     {
         if (empty($aEvent['id']) || empty($aEvent['name']) || empty($aEvent['start_time']))
