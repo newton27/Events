@@ -10,8 +10,8 @@ INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`) VAL
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT IGNORE INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-('gmo_fb_events_graph_version', '24.0', @iCategoryId, 'Meta Graph API version', 'digit', '', '', '', 10),
-('gmo_fb_events_page_token', '', @iCategoryId, 'Facebook Page access token', 'password', '', '', '', 20),
-('gmo_fb_events_author_profile_id', '0', @iCategoryId, 'UNA author profile ID', 'digit', '', '', '', 30),
-('gmo_fb_events_category_id', '0', @iCategoryId, 'UNA event category ID', 'digit', '', '', '', 40),
-('gmo_fb_events_timezone', 'America/New_York', @iCategoryId, 'Default timezone', 'text', '', '', '', 50);
+('gmo_fb_events_graph_version', '24.0', @iCategoryId, '_gmo_fb_events_option_graph_version', 'digit', '', '', '', 10),
+('gmo_fb_events_page_token', '', @iCategoryId, '_gmo_fb_events_option_page_token', 'password', '', '', '', 20),
+('gmo_fb_events_author_profile_id', '0', @iCategoryId, '_gmo_fb_events_option_author_profile_id', 'digit', '', '', '', 30),
+('gmo_fb_events_category_id', '0', @iCategoryId, '_gmo_fb_events_option_category_id', 'digit', '', '', '', 40),
+('gmo_fb_events_timezone', 'America/New_York', @iCategoryId, '_gmo_fb_events_option_timezone', 'text', '', '', '', 50);
