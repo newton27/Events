@@ -16,9 +16,14 @@ class GmoFbEventsGraphClient
         if (!preg_match('/^\d{5,32}$/', $sEventId))
             throw new InvalidArgumentException('Invalid Facebook event ID.');
 
+        if ($this->sToken === '')
+            throw new RuntimeException('Add a Facebook Page access token in the module settings.');
+        if (!preg_match('/^\\d+\\.\\d+$/', $this->sVersion))
+            throw new RuntimeException('The Meta Graph API version is invalid.');
+
         $sFields = 'id,name,description,start_time,end_time,place,timezone,cover,event_times';
         $sUrl = 'https://graph.facebook.com/v' . $this->sVersion . '/' . rawurlencode($sEventId)
-            . '?' . http_build_query(array('fields' => $sFields, 'access_token' => $this->sToken), '', '&', PHP_QUERY_RFC3986);
+            . '?' . http_build_query(array('fields' => $sFields), '', '&', PHP_QUERY_RFC3986);
 
         $oCurl = curl_init($sUrl);
         curl_setopt_array($oCurl, array(
@@ -27,7 +32,10 @@ class GmoFbEventsGraphClient
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_TIMEOUT => 25,
             CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
-            CURLOPT_HTTPHEADER => array('Accept: application/json'),
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'Authorization: Bearer ' . $this->sToken,
+            ),
         ));
         $sBody = curl_exec($oCurl);
         $iStatus = (int)curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
