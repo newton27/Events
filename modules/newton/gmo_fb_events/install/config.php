@@ -5,7 +5,7 @@ $aConfig = array(
     'name' => 'gmo_fb_events',
     'title' => 'Facebook Events Importer',
     'note' => 'Imports permitted Facebook Page events into UNA Events.',
-    'version' => '1.0.0',
+    'version' => '1.0.2',
     'vendor' => 'GayMen.Online',
     'compatible_with' => array('15.0.x'),
     'home_dir' => 'newton/gmo_fb_events/',
@@ -19,4 +19,3 @@ $aConfig = array(
     'disable' => array('execute_sql' => 1, 'clear_db_cache' => 1),
     'dependencies' => array('bx_events' => '15.0.0'),
 );
-
