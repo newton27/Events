@@ -1,48 +1,22 @@
-# GayMen.Online Facebook Events Importer
+# Facebook Link Events Importer for UNA 15
 
-UNA 15.0.0-RC1 module for importing events from Facebook Page event links into the UNA Events app.
+This UNA module creates UNA Events from shared Facebook event links without requiring Facebook Login, a Meta app, or a Page access token.
 
-## Important Facebook limitation
+## Workflow
 
-This module uses Meta's Graph API and does not scrape Facebook HTML. A Facebook Page access token can only return event fields that Meta permits for the app, Page, token, and approved permissions. A public-looking event link is not a guarantee that the Graph API will return the event.
+1. In UNA Studio, configure the UNA author profile ID, UNA event category ID, and default timezone.
+2. Open Facebook Events Importer.
+3. Paste a Facebook event URL.
+4. Enter the event title and start date/time.
+5. Optionally enter the end date/time, location, and description.
+6. Click Create UNA event.
 
-## Install
+The original Facebook URL is added to the UNA event description as its source. The module rejects duplicate Facebook event IDs that were already imported.
 
-1. Copy `modules/newton/gmo_fb_events` into the matching path in the UNA installation.
-2. In UNA Studio, install **Facebook Events Importer**.
-3. Confirm that UNA's **Events** app is installed and enabled.
-4. In Studio Settings, open **Facebook Events Importer** and configure:
-   - Meta Graph API version
-   - Page access token
-   - UNA author profile ID
-   - UNA event category ID
-   - Default timezone
-   The importer page also has a **Configure API settings** button and reports which required values are missing without exposing the access token.
-5. Open `/modules/newton/gmo_fb_events/action.php` while signed in as an administrator.
-6. Paste one Facebook event URL per line, preview, then import.
+## Installation
 
-Do not commit a Page access token to GitHub. Store it only in the UNA Studio option.
+Copy the gmo_fb_events module folder into the matching UNA modules directory and install or enable it from Studio. For an existing installation, replace the module files and open the importer once; obsolete Graph API settings are removed automatically.
 
-## Supported URLs
+## Security
 
-- `https://www.facebook.com/events/123456789012345/`
-- `https://facebook.com/some-page/events/123456789012345`
-- `https://fb.me/e/...` only when the URL has already expanded to a URL containing the numeric event ID
-
-## Import behavior
-
-- Uses the numeric Facebook event ID as the deduplication key.
-- Creates events through UNA's `BxEventsFormsEntryHelper::addData()` pipeline.
-- Records successful and failed attempts in `gmo_fb_events_imports`.
-- Never deletes UNA events.
-- A repeated Facebook ID is skipped after a successful import.
-
-## Meta setup
-
-Create a Meta developer app, connect the Facebook Page, obtain the Page access token and complete any Meta App Review required for event/Page data. The module requests these fields:
-
-`id,name,description,start_time,end_time,place,timezone,cover,event_times`
-
-## Development and review
-
-All changes should be made on an `agent/...` branch and merged through a draft pull request. Never add live tokens or production database exports to the repository.
+Only UNA administrators can access the importer. Submissions use UNA's native CSRF protection. Facebook URLs are validated and must contain a numeric Facebook event ID.
