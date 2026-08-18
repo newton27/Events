@@ -11,7 +11,7 @@ This module uses Meta's Graph API and does not scrape Facebook HTML. A Facebook 
 1. Copy `modules/newton/gmo_fb_events` into the matching path in the UNA installation.
 2. In UNA Studio, install **Facebook Events Importer**.
 3. Confirm that UNA's **Events** app is installed and enabled.
-4. Configure the module options in Studio:
+4. In Studio Settings, open **Facebook Events Importer** and configure:
    - Meta Graph API version
    - Page access token
    - UNA author profile ID
@@ -45,4 +45,3 @@ Create a Meta developer app, connect the Facebook Page, obtain the Page access t
 ## Development and review
 
 All changes should be made on an `agent/...` branch and merged through a draft pull request. Never add live tokens or production database exports to the repository.
-
