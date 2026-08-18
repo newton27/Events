@@ -44,10 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($sPageToken === '') {
             $aResults[] = array('url' => '', 'ok' => false, 'message' => 'Enter a Facebook Page access token.');
         } else {
-            setParam('gmo_fb_events_page_token', $sPageToken);
-            $bTokenConfigured = true;
-            $bConfigured = $bAuthorConfigured && $bCategoryConfigured;
-            $aResults[] = array('url' => '', 'ok' => true, 'message' => 'Facebook Page access token saved.');
+            if ($oDb->setParam('gmo_fb_events_page_token', $sPageToken)) {
+                $bTokenConfigured = true;
+                $bConfigured = $bAuthorConfigured && $bCategoryConfigured;
+                $aResults[] = array('url' => '', 'ok' => true, 'message' => 'Facebook Page access token saved.');
+            } else {
+                $aResults[] = array('url' => '', 'ok' => false, 'message' => 'The token could not be saved. Confirm that the gmo_fb_events_page_token setting exists.');
+            }
         }
     } else {
         $bImport = isset($_POST['mode']) && $_POST['mode'] === 'import';
