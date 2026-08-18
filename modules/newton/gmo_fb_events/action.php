@@ -15,7 +15,7 @@ if (!$oModule) {
     exit;
 }
 
-$sCsrfToken = BxDolForm::genCsrfToken();
+$sCsrfToken = BxDolForm::getCsrfToken();
 $sStudioUrl = BX_DOL_URL_STUDIO;
 $sSettingsUrl = BX_DOL_URL_STUDIO . 'module.php?name=gmo_fb_events';
 $sStudioIcon = 'gmo_fb_events@modules/newton/gmo_fb_events/|std-icon.svg';
@@ -41,7 +41,7 @@ $aResults = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sToken = isset($_POST['csrf']) ? (string)$_POST['csrf'] : '';
-    if ($sToken === '' || !BxDolForm::isCsrfTokenValid($sToken)) {
+    if (getParam('sys_security_form_token_enable') === 'on' && ($sToken === '' || !BxDolForm::isCsrfTokenValid($sToken))) {
         http_response_code(400);
         $aResults[] = array('url' => $aFields['event_url'], 'ok' => false, 'message' => 'The form expired. Reload and try again.');
     } else {
