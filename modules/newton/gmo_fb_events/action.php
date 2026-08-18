@@ -1,5 +1,6 @@
 <?php
 require_once('../../../inc/header.inc.php');
+require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
 
 header('Content-Type: text/html; charset=utf-8');
 if (!isAdmin()) {
