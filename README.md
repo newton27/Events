@@ -17,6 +17,7 @@ This module uses Meta's Graph API and does not scrape Facebook HTML. A Facebook 
    - UNA author profile ID
    - UNA event category ID
    - Default timezone
+   The importer page also has a **Configure API settings** button and reports which required values are missing without exposing the access token.
 5. Open `/modules/newton/gmo_fb_events/action.php` while signed in as an administrator.
 6. Paste one Facebook event URL per line, preview, then import.
 
