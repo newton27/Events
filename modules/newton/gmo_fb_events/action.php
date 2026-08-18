@@ -15,8 +15,7 @@ if (!$oModule) {
     exit;
 }
 
-if (empty($_SESSION['gmo_fb_events_csrf']))
-    $_SESSION['gmo_fb_events_csrf'] = bin2hex(random_bytes(32));
+$sCsrfToken = BxDolForm::genCsrfToken();
 
 $sStudioUrl = BX_DOL_URL_STUDIO;
 $sSettingsUrl = BX_DOL_URL_STUDIO . 'module.php?name=gmo_fb_events';
@@ -37,7 +36,7 @@ $aResults = array();
 $sUrls = isset($_POST['urls']) ? trim((string)$_POST['urls']) : '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sToken = isset($_POST['csrf']) ? (string)$_POST['csrf'] : '';
-    if (!hash_equals($_SESSION['gmo_fb_events_csrf'], $sToken)) {
+    if ($sToken === '' || !BxDolForm::isCsrfTokenValid($sToken)) {
         http_response_code(400);
         $aResults[] = array('url' => '', 'ok' => false, 'message' => 'The form expired. Reload and try again.');
     } else {
@@ -67,7 +66,7 @@ function gmo_h($s) { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTI
 <section class="card status <?=$bConfigured?'':'bad'?>"><strong><?=$bConfigured?'Ready to import':'Setup required'?></strong>
 <p><?=$bConfigured?'The Page token, UNA author profile, and event category are configured.':'Open API settings and complete the Page access token, UNA author profile ID, and UNA event category ID.'?></p>
 <div class="muted">Page token: <?=$bTokenConfigured?'configured':'missing'?> · Author profile: <?=$bAuthorConfigured?'configured':'missing'?> · Event category: <?=$bCategoryConfigured?'configured':'missing'?></div></section>
-<form class="card" method="post"><input type="hidden" name="csrf" value="<?=gmo_h($_SESSION['gmo_fb_events_csrf'])?>">
+<form class="card" method="post"><input type="hidden" name="csrf" value="<?=gmo_h($sCsrfToken)?>">
 <textarea name="urls" required placeholder="https://www.facebook.com/events/123456789012345/"><?=gmo_h($sUrls)?></textarea><br>
 <button name="mode" value="preview">Preview</button><button name="mode" value="import">Import into GayMen.Online</button></form>
 <?php foreach ($aResults as $aResult): ?><section class="result <?=$aResult['ok']?'ok':'bad'?>">
