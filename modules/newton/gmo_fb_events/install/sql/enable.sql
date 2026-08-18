@@ -2,7 +2,7 @@ SET @sName = 'gmo_fb_events';
 
 SET @iTypeOrder = (SELECT MAX(`order`) FROM `sys_options_types` WHERE `group` = 'modules');
 INSERT INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES
-('modules', @sName, '_gmo_fb_events', 'calendar-days', IFNULL(@iTypeOrder, 0) + 1);
+('modules', @sName, '_gmo_fb_events', 'gmo_fb_events@modules/newton/gmo_fb_events/|std-icon.svg', IFNULL(@iTypeOrder, 0) + 1);
 SET @iTypeId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`) VALUES
