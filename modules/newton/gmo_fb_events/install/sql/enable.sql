@@ -1,17 +1,13 @@
 SET @sName = 'gmo_fb_events';
 
-SET @iTypeId = (SELECT `id` FROM `sys_options_types` WHERE `name` = @sName LIMIT 1);
 SET @iTypeOrder = (SELECT MAX(`order`) FROM `sys_options_types` WHERE `group` = 'modules');
-INSERT INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`)
-SELECT 'modules', @sName, '_gmo_fb_events', 'calendar-days', IFNULL(@iTypeOrder, 0) + 1
-WHERE @iTypeId IS NULL;
-SET @iTypeId = (SELECT `id` FROM `sys_options_types` WHERE `name` = @sName LIMIT 1);
+INSERT INTO `sys_options_types` (`group`, `name`, `caption`, `icon`, `order`) VALUES
+('modules', @sName, '_gmo_fb_events', 'calendar-days', IFNULL(@iTypeOrder, 0) + 1);
+SET @iTypeId = LAST_INSERT_ID();
 
-SET @iCategoryId = (SELECT `id` FROM `sys_options_categories` WHERE `type_id` = @iTypeId AND `name` = @sName LIMIT 1);
-INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`)
-SELECT @iTypeId, @sName, '_gmo_fb_events', 10
-WHERE @iCategoryId IS NULL;
-SET @iCategoryId = (SELECT `id` FROM `sys_options_categories` WHERE `type_id` = @iTypeId AND `name` = @sName LIMIT 1);
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`) VALUES
+(@iTypeId, @sName, '_gmo_fb_events', 10);
+SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT IGNORE INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 ('gmo_fb_events_graph_version', '24.0', @iCategoryId, 'Meta Graph API version', 'digit', '', '', '', 10),
