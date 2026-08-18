@@ -23,6 +23,7 @@ $oDb = BxDolDb::getInstance();
 $oDb->query("UPDATE `sys_std_pages` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
 $oDb->query("UPDATE `sys_std_widgets` SET `icon` = ? WHERE `module` = ?", array($sStudioIcon, 'gmo_fb_events'));
 $oDb->query("UPDATE `sys_options_types` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
+$oDb->query("DELETE FROM `sys_options` WHERE `name` IN ('gmo_fb_events_page_token', 'gmo_fb_events_graph_version')");
 
 $bAuthorConfigured = (int)getParam('gmo_fb_events_author_profile_id') > 0;
 $bCategoryConfigured = (int)getParam('gmo_fb_events_category_id') > 0;
