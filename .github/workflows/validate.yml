@@ -1,0 +1,41 @@
+name: Validate UNA module
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - '7.4'
+          - '8.1'
+          - '8.3'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Lint PHP files
+        shell: bash
+        run: find modules tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Test URL parsing
+        run: php tests/extract_event_id_test.php
+
+      - name: Test package structure
+        run: php tests/package_structure_test.php
