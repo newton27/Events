@@ -15,8 +15,18 @@ The original Facebook URL is added to the UNA event description as its source. T
 
 ## Installation
 
-Copy the gmo_fb_events module folder into the matching UNA modules directory and install or enable it from Studio. For an existing installation, replace the module files and open the importer once to refresh its Studio metadata.
+Copy `modules/newton/gmo_fb_events` to the same path under the UNA installation, then install or enable it in Studio. The directory placed on the server must contain `install/config.php` directly beneath the module root; do not upload the repository wrapper folder as the module itself.
+
+For an existing installation, replace the module files, recompile the English language in Studio if the displayed name is cached, clear UNA's cache, and reopen Studio.
 
 ## Security
 
 Only UNA administrators can access the importer. Submissions use UNA's native CSRF protection. Facebook URLs are validated and must contain a numeric Facebook event ID.
+
+## Compatibility and validation
+
+- Target: UNA 15.0.x with the UNA Events module 15.0.0 or newer.
+- Internal module ID: `gmo_fb_events` (retained for upgrade compatibility).
+- The importer is restricted to UNA administrators and uses UNA's CSRF validation.
+- The link parser accepts only numeric event URLs on approved `facebook.com` hosts.
+- Run `php tests/extract_event_id_test.php` and `php tests/package_structure_test.php` from the repository root for the standalone checks.
