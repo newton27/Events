@@ -2,8 +2,9 @@
 
 if (!defined('BX_DOL'))
     define('BX_DOL', true);
-if (!class_exists('BxDolModule'))
+if (!class_exists('BxDolModule')) {
     class BxDolModule {}
+}
 
 require_once dirname(__DIR__) . '/modules/newton/gmo_fb_events/classes/GmoFbEventsModule.php';
 
