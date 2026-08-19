@@ -12,7 +12,7 @@ if (!isAdmin()) {
 $oModule = BxDolModule::getInstance('gmo_fb_events');
 if (!$oModule) {
     http_response_code(503);
-    echo 'Facebook Events Importer is not enabled.';
+    echo 'UNA Facebook Importer is not enabled.';
     exit;
 }
 
@@ -66,10 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function gmo_h($s) { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 ?><!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Facebook Link Event Importer</title>
+<title>UNA Facebook Importer</title>
 <style>:root{color-scheme:light}body{margin:0;background:#f5f7fb;color:#202124;font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}.topbar{display:flex;gap:10px;align-items:center;padding:14px 22px;background:#fff;border-bottom:1px solid #dfe3eb;box-shadow:0 1px 4px #102a4312}.wrap{max-width:900px;margin:32px auto;padding:0 20px}.card{background:#fff;border:1px solid #dfe3eb;border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 4px 16px #102a430d}.btn,button{display:inline-block;border:0;border-radius:7px;padding:10px 16px;background:#1769e0;color:#fff;text-decoration:none;font:600 14px system-ui;cursor:pointer}.btn.secondary{background:#e8eef8;color:#17345f}.status{border-left:5px solid #188038}.status.bad,.result.bad{border-left:5px solid #d93025}.result.ok{border-left:5px solid #188038}.field{margin:14px 0}.field label{display:block;font-weight:600;margin-bottom:6px}.field input,.field textarea{width:100%;padding:11px;border:1px solid #b9c1ce;border-radius:8px;box-sizing:border-box;font:15px/1.4 system-ui}.field textarea{min-height:120px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.result{border:1px solid #ddd;border-radius:8px;padding:14px;margin:12px 0}.muted{color:#666;font-size:14px}h1{margin-bottom:6px}@media(max-width:650px){.row{grid-template-columns:1fr}}</style></head><body>
 <nav class="topbar"><a class="btn secondary" href="<?=gmo_h($sStudioUrl)?>">&larr; Back to Studio</a><a class="btn" href="<?=gmo_h($sSettingsUrl)?>">Importer settings</a></nav><main class="wrap">
-<h1>Facebook Link Event Importer</h1>
+<h1>UNA Facebook Importer</h1>
 <p>Share a Facebook event link and enter its essential details. No Facebook API token is required.</p>
 <section class="card status <?=$bConfigured?'':'bad'?>"><strong><?=$bConfigured?'Ready to import':'Setup required'?></strong>
 <p><?=$bConfigured?'UNA author profile and event category are configured.':'Set the UNA author profile ID and event category ID in Studio.'?></p>
