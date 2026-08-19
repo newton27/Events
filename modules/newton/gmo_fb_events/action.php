@@ -3,6 +3,9 @@ require_once('../../../inc/header.inc.php');
 require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
 
 header('Content-Type: text/html; charset=utf-8');
+header('Cache-Control: no-store, private');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: same-origin');
 if (!isAdmin()) {
     http_response_code(403);
     echo 'Administrator access is required.';
@@ -19,12 +22,6 @@ if (!$oModule) {
 $sCsrfToken = BxDolForm::getCsrfToken();
 $sStudioUrl = BX_DOL_URL_STUDIO;
 $sSettingsUrl = BX_DOL_URL_STUDIO . 'module.php?name=gmo_fb_events';
-$sStudioIcon = 'gmo_fb_events@modules/newton/gmo_fb_events/|studio-icon.svg';
-$oDb = BxDolDb::getInstance();
-$oDb->query("UPDATE `sys_std_pages` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
-$oDb->query("UPDATE `sys_std_widgets` SET `icon` = ? WHERE `module` = ?", array($sStudioIcon, 'gmo_fb_events'));
-$oDb->query("UPDATE `sys_options_types` SET `icon` = ? WHERE `name` = ?", array($sStudioIcon, 'gmo_fb_events'));
-
 $bAuthorConfigured = (int)getParam('gmo_fb_events_author_profile_id') > 0;
 $bCategoryConfigured = (int)getParam('gmo_fb_events_category_id') > 0;
 $bConfigured = $bAuthorConfigured && $bCategoryConfigured;
@@ -57,8 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $aResults[] = array('url' => $aFields['event_url'], 'ok' => true, 'message' => $aData['message'], 'data' => $aData);
             if ($aData['status'] === 'imported')
                 $aFields = array_fill_keys(array_keys($aFields), '');
-        } catch (Throwable $e) {
-            $aResults[] = array('url' => $aFields['event_url'], 'ok' => false, 'message' => $e->getMessage());
+        } catch (InvalidArgumentException $oException) {
+            $aResults[] = array('url' => $aFields['event_url'], 'ok' => false, 'message' => $oException->getMessage());
+        } catch (RuntimeException $oException) {
+            $aResults[] = array('url' => $aFields['event_url'], 'ok' => false, 'message' => $oException->getMessage());
+        } catch (Throwable $oException) {
+            error_log('gmo_fb_events import failed: ' . $oException->getMessage());
+            $aResults[] = array('url' => $aFields['event_url'], 'ok' => false, 'message' => 'The event could not be created. Check the UNA error log for details.');
         }
     }
 }
@@ -81,8 +83,8 @@ function gmo_h($s) { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTI
 <div class="field"><label for="event_name">Event title</label><input id="event_name" name="event_name" maxlength="255" required value="<?=gmo_h($aFields['event_name'])?>"></div>
 <div class="row"><div class="field"><label for="event_start">Starts</label><input id="event_start" name="event_start" type="datetime-local" required value="<?=gmo_h($aFields['event_start'])?>"></div>
 <div class="field"><label for="event_end">Ends</label><input id="event_end" name="event_end" type="datetime-local" value="<?=gmo_h($aFields['event_end'])?>"></div></div>
-<div class="field"><label for="event_location">Location (optional)</label><input id="event_location" name="event_location" value="<?=gmo_h($aFields['event_location'])?>"></div>
-<div class="field"><label for="event_description">Description (optional)</label><textarea id="event_description" name="event_description"><?=gmo_h($aFields['event_description'])?></textarea></div>
+<div class="field"><label for="event_location">Location (optional)</label><input id="event_location" name="event_location" maxlength="1000" value="<?=gmo_h($aFields['event_location'])?>"></div>
+<div class="field"><label for="event_description">Description (optional)</label><textarea id="event_description" name="event_description" maxlength="60000"><?=gmo_h($aFields['event_description'])?></textarea></div>
 <button type="submit">Create UNA event</button>
 </form>
 
