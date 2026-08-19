@@ -16,6 +16,12 @@ CREATE TABLE IF NOT EXISTS `gmo_fb_events_imports` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Remove stale Studio records left by an interrupted installation.
+DELETE FROM `sys_std_pages_widgets`
+WHERE `widget_id` IN (SELECT `id` FROM `sys_std_widgets` WHERE `module` = @sName);
+DELETE FROM `sys_std_widgets` WHERE `module` = @sName;
+DELETE FROM `sys_std_pages` WHERE `name` = @sName;
+
 -- Studio page and dashboard widget.
 INSERT INTO `sys_std_pages` (`index`, `name`, `header`, `caption`, `icon`) VALUES
 (3, @sName, '_gmo_fb_events', '_gmo_fb_events', 'gmo_fb_events@modules/newton/gmo_fb_events/|studio-icon.svg');
