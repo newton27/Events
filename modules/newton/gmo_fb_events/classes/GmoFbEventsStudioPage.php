@@ -19,7 +19,7 @@ class GmoFbEventsStudioPage extends BxTemplStudioModule
         $this->aPageJs = array_merge($this->aPageJs, $oOptions->getJs());
 
         $sImporterUrl = BX_DOL_URL_ROOT . 'modules/newton/gmo_fb_events/action.php';
-        $sIntro = '<div class="bx-def-margin-bottom"><a class="bx-btn" href="' . htmlspecialchars($sImporterUrl, ENT_QUOTES, 'UTF-8') . '">Open Facebook Events Importer</a></div>';
+        $sIntro = '<div class="bx-def-margin-bottom"><a class="bx-btn" href="' . htmlspecialchars($sImporterUrl, ENT_QUOTES, 'UTF-8') . '">Open UNA Facebook Importer</a></div>';
 
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('module.html', array(
             'content' => $sIntro . $oOptions->getCode(),
