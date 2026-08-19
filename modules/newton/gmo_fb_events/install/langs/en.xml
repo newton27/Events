@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources name="en" flag="gb" title="English">
     <string name="_gmo_fb_events"><![CDATA[UNA Facebook Importer]]></string>
-    <string name="_gmo_fb_events_option_graph_version"><![CDATA[Meta Graph API version]]></string>
-    <string name="_gmo_fb_events_option_page_token"><![CDATA[Facebook Page access token]]></string>
     <string name="_gmo_fb_events_option_author_profile_id"><![CDATA[UNA author profile ID]]></string>
     <string name="_gmo_fb_events_option_category_id"><![CDATA[UNA event category ID]]></string>
     <string name="_gmo_fb_events_option_timezone"><![CDATA[Default timezone]]></string>
